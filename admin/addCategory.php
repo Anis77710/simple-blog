@@ -1,5 +1,11 @@
 <?php
 require('../includes/config.php');
+session_start();
+
+// if(!isset($_SESSION['role']) || $_SESSION['role']!='admin'){
+//     echo 'access denied';
+//     die();
+// }
 
 if (isset($_POST['addCategory'])) {
     // print_r($_POST);
@@ -14,18 +20,10 @@ if (isset($_POST['addCategory'])) {
     }
 }
 
-
-
-
-
 $sql = "SELECT * FROM `categories`";
 $result = $conn->query($sql);
 // $result = mysqli_query($conn, $sql);
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,8 +72,18 @@ $result = $conn->query($sql);
 
                     ?>
                             <tr>
-                                <td><?php ++$counter ?></td>
+                                <td><?= ++$counter ?></td>
                                 <td><?php echo $row['category_name']; ?></td>
+                                <td>
+                                    <a href="./manageCategory.php?cid=<?= $row['id']; ?>&action=e" class="btn btn-primary p-1 m-1" title="Edit">
+                                        <!-- <span style="color: blue;">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </span> -->
+                                        Edit</a>
+                                    <a href="./manageCategory.php?cid=<?= $row['id']; ?>&action=d" class="btn btn-danger p-1 m-1" title="Delete">
+                                        Delete
+                                    </a>
+                                </td>
                             </tr>
                         <?php endwhile; ?>
                 </table>
