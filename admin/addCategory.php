@@ -75,12 +75,12 @@ $result = $conn->query($sql);
                                 <td><?= ++$counter ?></td>
                                 <td><?php echo $row['category_name']; ?></td>
                                 <td>
-                                    <a href="./manageCategory.php?cid=<?= $row['id']; ?>&action=e" class="btn btn-primary p-1 m-1" title="Edit">
+                                    <a href="./manageCategory.php?id=<?= $row['id']; ?>&action=e" class="btn btn-primary p-1 m-1" title="Edit">
                                         <!-- <span style="color: blue;">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </span> -->
                                         Edit</a>
-                                    <a href="./manageCategory.php?cid=<?= $row['id']; ?>&action=d" class="btn btn-danger p-1 m-1" title="Delete">
+                                    <a href="./manageCategory.php?id=<?= $row['id']; ?>&action=d" class="btn btn-danger p-1 m-1" title="Delete">
                                         Delete
                                     </a>
                                 </td>
