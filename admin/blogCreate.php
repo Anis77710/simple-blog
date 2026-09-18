@@ -29,7 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die('Photo must be a JPG, PNG, GIF or WEBP image.');
         }
         $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $dest = dirname(__DIR__) . '/uploads/' . $filename;
+        $upload_dir = dirname(__DIR__) . '/uploads';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0755, true);
+        }
+        $dest = $upload_dir . '/' . $filename;
         if (!move_uploaded_file($_FILES['photo']['tmp_name'], $dest)) {
             http_response_code(500);
             die('Could not save photo.');
