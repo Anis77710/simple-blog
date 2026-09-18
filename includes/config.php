@@ -5,11 +5,12 @@ $username = "root";
 $password = "";
 $database = "php_blog";
 
-$conn = mysqli_connect($server, $username, $password, $database);
- 
-if($conn){
-    echo "Connection established";
-}
-else{
-    echo "Connection failed".mysqli_connect_error();
+try {
+    $conn = mysqli_connect($server, $username, $password, $database);
+    if (!$conn) {
+        throw new Exception(mysqli_connect_error());
+    }
+} catch (Throwable $e) {
+    http_response_code(500);
+    die("Database connection failed: " . htmlspecialchars($e->getMessage()));
 }

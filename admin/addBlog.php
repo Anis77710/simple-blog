@@ -1,61 +1,45 @@
-<?php require('../includes/config.php');
- ?>
+<?php require('../includes/config.php'); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
-
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Blog - Simple Blog</title>
 </head>
 <body>
+<h1>Add Blog</h1>
 <?php include './adminHeader.php' ?>
-<div class="container">
-
-
+<?php if (isset($_GET['success'])): ?>
+<p>Post published successfully.</p>
+<?php endif; ?>
+<?php
+$sql = "SELECT * FROM categories ORDER BY category_name";
+$result = mysqli_query($conn, $sql);
+?>
 <form action="./blogCreate.php" method="POST">
-    <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
-      <input type="text" class="form-control" id="title" name="title" placeholder="Enter the title of your blog post" required>
-    </div>
-
-    <div class="mb-3">
-      <label for="category" class="form-label">Category</label>
-      <?php
-      $sql = "SELECT * from categories";
-      $result = mysqli_query($conn, $sql);
-
-      $num = mysqli_num_rows($result);
-
-    //   $row = mysqli_fetch_assoc($result);
-
-      
-      ?>
-      <select class="form-select" id="category" name="category" required>
-        <option value="">Select Category</option>
-        <?php 
-        if($num>0){
-        while ($row = mysqli_fetch_assoc($result)){  
-            ?>
-            <option value="<?php echo $row['id'] ?>"><?php echo $row['category_name'] ?></option>
-       <?php }}
-        
-        ?>
-       
-        <!-- <option value="lifestyle">Lifestyle</option>
-        <option value="health">Health</option>
-        <option value="business">Business</option> -->
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="content" class="form-label">Content</label>
-      <textarea class="form-control" id="content" name="content" rows="6" placeholder="Write your blog content here..." required></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Publish Post</button>
-  </form>
-  </div>
+<p>
+<label>Title:<br>
+<input type="text" name="title" size="50" required>
+</label>
+</p>
+<p>
+<label>Category:<br>
+<select name="category" required>
+<option value="">Select Category</option>
+<?php if ($result): ?>
+<?php while ($row = mysqli_fetch_assoc($result)): ?>
+<option value="<?php echo (int)$row['id']; ?>"><?php echo htmlspecialchars($row['category_name']); ?></option>
+<?php endwhile; ?>
+<?php endif; ?>
+</select>
+</label>
+</p>
+<p>
+<label>Content:<br>
+<textarea name="content" rows="10" cols="60" required></textarea>
+</label>
+</p>
+<p><input type="submit" value="Publish Post"></p>
+</form>
 </body>
 </html>
