@@ -22,7 +22,6 @@ $posts_result = mysqli_query($conn, $sql);
 </head>
 <body>
 <h1>Simple Blog</h1>
-<p><a href="./login.php">Login</a> | <a href="./admin/dashboard.php">Admin</a></p>
 <hr>
 
 <h2>Categories</h2>
