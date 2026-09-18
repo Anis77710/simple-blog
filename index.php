@@ -22,6 +22,13 @@ $posts_result = mysqli_query($conn, $sql);
 </head>
 <body>
 <h1>Simple Blog</h1>
+<p>
+<a href="./index.php">Home</a> |
+<a href="./admin/dashboard.php">Dashboard</a> |
+<a href="./admin/addBlog.php">Add Blog</a> |
+<a href="./admin/managePosts.php">Manage Posts</a> |
+<a href="./admin/addCategory.php">Categories</a>
+</p>
 <hr>
 
 <h2>Categories</h2>
