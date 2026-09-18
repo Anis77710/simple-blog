@@ -17,6 +17,7 @@ $result = mysqli_query($conn, "SELECT p.id, p.title, p.category_id, p.content, p
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../assets/css/style.css">
 <title>Manage Posts - Simple Blog</title>
 </head>
 <body>
