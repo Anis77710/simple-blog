@@ -7,7 +7,7 @@ if ($id <= 0) {
     die('Invalid post id. <a href="./index.php">Back</a>');
 }
 
-$sql = "SELECT p.*, c.category_name FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = $id";
+$sql = "SELECT p.id, p.title, p.category_id, p.content, p.created_at, (p.image_data IS NOT NULL) AS has_image, c.category_name FROM posts p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = $id";
 $result = mysqli_query($conn, $sql);
 $post = $result ? mysqli_fetch_assoc($result) : null;
 if (!$post) {
@@ -27,8 +27,8 @@ if (!$post) {
 <hr>
 <h1><?php echo htmlspecialchars($post['title']); ?></h1>
 <p>Category: <?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?> | Date: <?php echo htmlspecialchars($post['created_at']); ?></p>
-<?php if (!empty($post['image'])): ?>
-<p><img src="./<?php echo htmlspecialchars($post['image']); ?>" alt="" width="500"></p>
+<?php if (!empty($post['has_image'])): ?>
+<p><img src="./image.php?id=<?php echo (int)$post['id']; ?>" alt="" width="500"></p>
 <?php endif; ?>
 <hr>
 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>

@@ -4,18 +4,13 @@ require('../includes/config.php');
 if (isset($_GET['action']) && $_GET['action'] === 'd') {
     $id = (int)($_GET['id'] ?? 0);
     if ($id > 0) {
-        $old = mysqli_query($conn, "SELECT image FROM posts WHERE id = $id");
-        $oldrow = $old ? mysqli_fetch_assoc($old) : null;
         mysqli_query($conn, "DELETE FROM posts WHERE id = $id");
-        if ($oldrow && !empty($oldrow['image'])) {
-            @unlink(dirname(__DIR__) . '/' . $oldrow['image']);
-        }
     }
     header('Location: ./managePosts.php');
     exit;
 }
 
-$result = mysqli_query($conn, "SELECT p.*, c.category_name FROM posts p LEFT JOIN categories c ON p.category_id = c.id ORDER BY p.created_at DESC");
+$result = mysqli_query($conn, "SELECT p.id, p.title, p.category_id, p.content, p.created_at, (p.image_data IS NOT NULL) AS has_image, c.category_name FROM posts p LEFT JOIN categories c ON p.category_id = c.id ORDER BY p.created_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +29,7 @@ $result = mysqli_query($conn, "SELECT p.*, c.category_name FROM posts p LEFT JOI
 <?php while ($row = mysqli_fetch_assoc($result)): ?>
 <tr>
 <td><?php echo (int)$row['id']; ?></td>
-<td><?php if (!empty($row['image'])): ?><a href="../post.php?id=<?php echo (int)$row['id']; ?>"><img src="../<?php echo htmlspecialchars($row['image']); ?>" alt="" width="80"></a><?php else: ?>-<?php endif; ?></td>
+<td><?php if (!empty($row['has_image'])): ?><a href="../post.php?id=<?php echo (int)$row['id']; ?>"><img src="../image.php?id=<?php echo (int)$row['id']; ?>" alt="" width="80"></a><?php else: ?>-<?php endif; ?></td>
 <td><a href="../post.php?id=<?php echo (int)$row['id']; ?>"><?php echo htmlspecialchars($row['title']); ?></a></td>
 <td><?php echo htmlspecialchars($row['category_name'] ?? 'Uncategorized'); ?></td>
 <td><?php echo htmlspecialchars($row['created_at']); ?></td>

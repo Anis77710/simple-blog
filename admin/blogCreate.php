@@ -2,16 +2,17 @@
 require('../includes/config.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = mysqli_real_escape_string($conn, $_POST['title'] ?? '');
+    $title = trim($_POST['title'] ?? '');
     $category_id = (int)($_POST['category'] ?? 0);
-    $content = mysqli_real_escape_string($conn, $_POST['content'] ?? '');
+    $content = $_POST['content'] ?? '';
 
     if ($title === '' || $category_id <= 0 || $content === '') {
         http_response_code(400);
         die('Title, category and content are all required.');
     }
 
-    $image_path = null;
+    $image_data = null;
+    $image_type = null;
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             http_response_code(400);
@@ -28,22 +29,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             http_response_code(400);
             die('Photo must be a JPG, PNG, GIF or WEBP image.');
         }
-        $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $upload_dir = dirname(__DIR__) . '/uploads';
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0755, true);
-        }
-        $dest = $upload_dir . '/' . $filename;
-        if (!move_uploaded_file($_FILES['photo']['tmp_name'], $dest)) {
+        $image_data = file_get_contents($_FILES['photo']['tmp_name']);
+        $image_type = $info['mime'];
+        if ($image_data === false) {
             http_response_code(500);
-            die('Could not save photo.');
+            die('Could not read photo.');
         }
-        $image_path = 'uploads/' . $filename;
     }
 
-    $image_sql = $image_path === null ? 'NULL' : "'" . mysqli_real_escape_string($conn, $image_path) . "'";
-    $sql = "INSERT INTO `posts` (`title`, `category_id`, `content`, `image`) VALUES ('$title', $category_id, '$content', $image_sql)";
-    $result = mysqli_query($conn, $sql);
+    if ($image_data !== null) {
+        $stmt = mysqli_prepare($conn, "INSERT INTO `posts` (`title`, `category_id`, `content`, `image_data`, `image_type`) VALUES (?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            http_response_code(500);
+            die('Failed to publish post: ' . htmlspecialchars(mysqli_error($conn)));
+        }
+        mysqli_stmt_bind_param($stmt, 'sisss', $title, $category_id, $content, $image_data, $image_type);
+    } else {
+        $stmt = mysqli_prepare($conn, "INSERT INTO `posts` (`title`, `category_id`, `content`) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            http_response_code(500);
+            die('Failed to publish post: ' . htmlspecialchars(mysqli_error($conn)));
+        }
+        mysqli_stmt_bind_param($stmt, 'sis', $title, $category_id, $content);
+    }
+    $result = mysqli_stmt_execute($stmt);
     if ($result) {
         header('Location: ./addBlog.php?success=1');
         exit;
