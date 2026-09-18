@@ -39,6 +39,9 @@ $posts_result = mysqli_query($conn, $sql);
 <?php if ($posts_result && mysqli_num_rows($posts_result) > 0): ?>
 <?php while ($post = mysqli_fetch_assoc($posts_result)): ?>
 <h3><a href="./post.php?id=<?php echo (int)$post['id']; ?>"><?php echo htmlspecialchars($post['title']); ?></a></h3>
+<?php if (!empty($post['image'])): ?>
+<p><a href="./post.php?id=<?php echo (int)$post['id']; ?>"><img src="./<?php echo htmlspecialchars($post['image']); ?>" alt="" width="200"></a></p>
+<?php endif; ?>
 <p>Category: <?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?> | Date: <?php echo htmlspecialchars($post['created_at']); ?></p>
 <p><?php echo htmlspecialchars(mb_substr($post['content'], 0, 200)); ?><?php echo mb_strlen($post['content']) > 200 ? '...' : ''; ?></p>
 <p><a href="./post.php?id=<?php echo (int)$post['id']; ?>">Read more</a></p>

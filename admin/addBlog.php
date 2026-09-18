@@ -16,7 +16,7 @@
 $sql = "SELECT * FROM categories ORDER BY category_name";
 $result = mysqli_query($conn, $sql);
 ?>
-<form action="./blogCreate.php" method="POST">
+<form action="./blogCreate.php" method="POST" enctype="multipart/form-data">
 <p>
 <label>Title:<br>
 <input type="text" name="title" size="50" required>
@@ -37,6 +37,11 @@ $result = mysqli_query($conn, $sql);
 <p>
 <label>Content:<br>
 <textarea name="content" rows="10" cols="60" required></textarea>
+</label>
+</p>
+<p>
+<label>Photo (optional, JPG/PNG/GIF/WEBP, max 2MB):<br>
+<input type="file" name="photo" accept="image/jpeg,image/png,image/gif,image/webp">
 </label>
 </p>
 <p><input type="submit" value="Publish Post"></p>

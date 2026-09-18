@@ -27,6 +27,9 @@ if (!$post) {
 <hr>
 <h1><?php echo htmlspecialchars($post['title']); ?></h1>
 <p>Category: <?php echo htmlspecialchars($post['category_name'] ?? 'Uncategorized'); ?> | Date: <?php echo htmlspecialchars($post['created_at']); ?></p>
+<?php if (!empty($post['image'])): ?>
+<p><img src="./<?php echo htmlspecialchars($post['image']); ?>" alt="" width="500"></p>
+<?php endif; ?>
 <hr>
 <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
 <hr>
